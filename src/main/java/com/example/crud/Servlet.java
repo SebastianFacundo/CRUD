@@ -11,100 +11,81 @@ import javax.servlet.annotation.*;
 @WebServlet(name = "servlet", value = "/servlet")
 public class Servlet extends HttpServlet {
 
-    Cliente cliente;
-    ClienteDAO cliente_dao = new ClienteDAO();
-    RequestDispatcher rd = null;
+    private Cliente cliente = new Cliente();
+    private ClienteDAO cliente_dao = new ClienteDAO();
+    private RequestDispatcher rd = null;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    private void ingresar(String accion, HttpServletRequest request) {
+        if (accion.equals("ingresar") && !(cliente_dao.existe(Integer.parseInt(request.getParameter("dni"))))) {
+            cliente.setNombre(request.getParameter("nombre"));
+            cliente.setApellido(request.getParameter("apellido"));
+            cliente.setDni(Integer.parseInt(request.getParameter("dni")));
+            cliente.setEmail(request.getParameter("email"));
+            cliente.setFecha_alta(new Date(System.currentTimeMillis()));
+            if (cliente_dao.insertar(cliente)) {
+                request.setAttribute("mensaje", "INGRESO EXITOSO");
+                rd = request.getRequestDispatcher("exito.jsp");
+            }
+        } else if (accion.equals("ingresar")) {
+            request.setAttribute("titulo", "Error al Ingresar");
+            request.setAttribute("mensaje", "DNI YA INGRESADO");
+            rd = request.getRequestDispatcher("error.jsp");
+        }
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-
-        String accion = request.getParameter("accion");
-
-        if (accion.equals("ingresar")) {
-            if (!(cliente_dao.duplicado(Integer.parseInt(request.getParameter("dni"))))) {
-                cliente = new Cliente();
-                cliente.setNombre(request.getParameter("nombre"));
-                cliente.setApellido(request.getParameter("apellido"));
-                cliente.setDni(Integer.parseInt(request.getParameter("dni")));
-                cliente.setEmail(request.getParameter("email"));
-                cliente.setFecha_alta(new Date(System.currentTimeMillis()));
-                if (cliente_dao.insertar(cliente)) {
-                    request.setAttribute("mensaje", "INGRESO EXITOSO");
-                    rd = request.getRequestDispatcher("exito.jsp");
-                }
-            } else {
-                request.setAttribute("titulo", "Error al Ingresar");
-                request.setAttribute("mensaje", "DNI YA INGRESADO");
-                rd = request.getRequestDispatcher("error.jsp");
-            }
-        }
-
-        if (accion.equals("actualizar1")) {
-
+    private void actualizar(String accion, HttpServletRequest request) {
+        if (accion.equals("actualizar1") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
             cliente = cliente_dao.buscar(Integer.parseInt(request.getParameter("dni")));
-            try {
-                if (!cliente.equals(null)) {
-                    request.setAttribute("cliente", cliente);
-                    request.setAttribute("titulo", "Formulario de Actualización");
-                    request.setAttribute("h1", "Actualización");
-                    request.setAttribute("boton", "Actualizar");
-                    request.setAttribute("color_boton", "warning");
-                    request.setAttribute("mensaje", "*No se puede modificar el DNI, en ese caso eliminar y volver a ingresar");
-                    request.setAttribute("accion", "actualizar2");
-                    rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
-                }
-            } catch (Exception e) {
-                request.setAttribute("titulo", "Error al Buscar");
-                request.setAttribute("mensaje", "CLIENTE NO ENCONTRADO");
-                rd = request.getRequestDispatcher("error.jsp");
-            }
+            request.setAttribute("cliente", cliente);
+            request.setAttribute("titulo", "Formulario de Actualización");
+            request.setAttribute("h1", "Actualización");
+            request.setAttribute("boton", "Actualizar");
+            request.setAttribute("color_boton", "warning");
+            request.setAttribute("mensaje", "*No se puede modificar el DNI, en ese caso eliminar y volver a ingresar");
+            request.setAttribute("accion", "actualizar2");
+            rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
 
-        }
+        } else if (accion.equals("actualizar1")) {
+            request.setAttribute("titulo", "Error al Buscar");
+            request.setAttribute("mensaje", "CLIENTE NO ENCONTRADO");
+            rd = request.getRequestDispatcher("error.jsp");
 
+        } else if (accion.equals("actualizar2")) {
+            cliente.setNombre(request.getParameter("nombre"));
+            cliente.setApellido(request.getParameter("apellido"));
+            cliente.setDni(Integer.parseInt(request.getParameter("dni")));
+            cliente.setEmail(request.getParameter("email"));
+            if (cliente_dao.modificar(cliente)) {
+                request.setAttribute("mensaje", "CLIENTE ACTUALIZADO");
+                rd = request.getRequestDispatcher("exito.jsp");
 
-        if (accion.equals("actualizar2")) {
-            try {
-                cliente = new Cliente();
-                cliente.setNombre(request.getParameter("nombre"));
-                cliente.setApellido(request.getParameter("apellido"));
-                cliente.setDni(Integer.parseInt(request.getParameter("dni")));
-                cliente.setEmail(request.getParameter("email"));
-                if (cliente_dao.modificar(cliente)) {
-                    request.setAttribute("mensaje", "CLIENTE ACTUALIZADO");
-                    rd = request.getRequestDispatcher("exito.jsp");
-                }
-            } catch (Exception e) {
+            } else {
                 request.setAttribute("titulo", "Error al Actualizar");
                 request.setAttribute("mensaje", "CLIENTE NO ACTUALIZADO");
                 rd = request.getRequestDispatcher("error.jsp");
             }
         }
+    }
 
-        if (accion.equals("eliminar1")) {
+    private void eliminar(String accion, HttpServletRequest request) {
+        if (accion.equals("eliminar1") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
             cliente = cliente_dao.buscar(Integer.parseInt(request.getParameter("dni")));
-            try {
-                if (!cliente.equals(null)) {
-                    request.setAttribute("cliente", cliente);
-                    request.setAttribute("titulo", "Formulario de Eliminación");
-                    request.setAttribute("h1", "Eliminación");
-                    request.setAttribute("boton", "Eliminar");
-                    request.setAttribute("color_boton", "danger");
-                    request.setAttribute("accion", "eliminar2");
-                    rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
-                }
-            } catch (Exception e) {
-                request.setAttribute("titulo", "Error al Buscar");
-                request.setAttribute("mensaje", "CLIENTE NO ENCONTRADO");
-                rd = request.getRequestDispatcher("error.jsp");
-            }
-        }
+            request.setAttribute("cliente", cliente);
+            request.setAttribute("titulo", "Formulario de Eliminación");
+            request.setAttribute("h1", "Eliminación");
+            request.setAttribute("boton", "Eliminar");
+            request.setAttribute("color_boton", "danger");
+            request.setAttribute("accion", "eliminar2");
+            rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
 
-        if (accion.equals("eliminar2")) {
+        } else if (accion.equals("eliminar1")) {
+            request.setAttribute("titulo", "Error al Buscar");
+            request.setAttribute("mensaje", "CLIENTE NO ENCONTRADO");
+            rd = request.getRequestDispatcher("error.jsp");
 
+        } else if (accion.equals("eliminar2")) {
+            System.out.println(cliente);
             if (cliente_dao.eliminar(cliente.getId_cliente())) {
                 request.setAttribute("mensaje", "CLIENTE ELIMINADO");
                 rd = request.getRequestDispatcher("exito.jsp");
@@ -114,10 +95,17 @@ public class Servlet extends HttpServlet {
                 rd = request.getRequestDispatcher("error.jsp");
             }
         }
-
-
-        rd.forward(request, response);
     }
+    public void doGet(HttpServletRequest request) {
 
+    }
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String accion = request.getParameter("accion");
+        ingresar(accion, request);
+        actualizar(accion, request);
+        eliminar(accion, request);
+        rd.forward(request, response);
+
+    }
 
 }

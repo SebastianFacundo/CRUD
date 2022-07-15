@@ -24,7 +24,7 @@
             </div>
             <div class="form-group mt-3">
                 <label class="fs-5"  for="dni">Dni:</label>
-                <input type="number" id="dni" name="dni" class="form-control" required>
+                <input type="number" id="dni" name="dni" class="form-control"47 max="2147483648" required>
             </div>
             <div class="form-group mt-3">
                 <label class="fs-5"  for="email">Email:</label>

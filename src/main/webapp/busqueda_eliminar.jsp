@@ -14,7 +14,7 @@
   <form class="row row-cols-1 row-cols-sm-auto justify-content-center pb-5 pt-5 mt-5 gy-5" action="servlet?accion=eliminar1" method="post">
 
     <label for="dni" class="col fs-3" >INGRESE DNI:</label>
-    <input type="number" class="col fs-4 mx-5 " name="dni"  id="dni" required>
+    <input type="number" class="col fs-4 mx-5 " name="dni"  id="dni" max="2147483648" required>
     <button type="submit" class="col btn btn-primary fs-5 mx-2">Buscar</button>
 
   </form>

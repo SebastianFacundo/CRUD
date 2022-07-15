@@ -71,12 +71,12 @@ public class ClienteDAO {
         return estado;
     }
 
-    public boolean eliminar(int dni) {
+    public boolean eliminar(int id) {
         Connection con = Conexion.getConnection();
         boolean estado = false;
         try {
             ps = con.prepareStatement("delete from clientes where id_cliente=?");
-            ps.setInt(1, dni);
+            ps.setInt(1, id);
             ps.executeUpdate();
             estado = true;
         } catch (SQLException e) {
@@ -111,7 +111,7 @@ public class ClienteDAO {
         return cliente;
     }
 
-    public boolean duplicado(int dni) {
+    public boolean existe(int dni) {
         Connection con = Conexion.getConnection();
         boolean encontrado = false;
         try {
