@@ -16,8 +16,8 @@ public class Servlet extends HttpServlet {
     private RequestDispatcher rd = null;
     private String accion;
 
-    private void ingresar(String accion, HttpServletRequest request) {
-        if (accion.equals("ingresar") && !(cliente_dao.existe(Integer.parseInt(request.getParameter("dni"))))) {
+    private void ingresar(String accion, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        if (!(cliente_dao.existe(Integer.parseInt(request.getParameter("dni"))))) {
             cliente.setNombre(request.getParameter("nombre"));
             cliente.setApellido(request.getParameter("apellido"));
             cliente.setDni(Integer.parseInt(request.getParameter("dni")));
@@ -27,15 +27,16 @@ public class Servlet extends HttpServlet {
                 request.setAttribute("mensaje", "INGRESO EXITOSO");
                 rd = request.getRequestDispatcher("exito.jsp");
             }
-        } else if (accion.equals("ingresar")) {
+        } else {
             request.setAttribute("titulo", "Error al Ingresar");
             request.setAttribute("mensaje", "DNI YA INGRESADO");
             rd = request.getRequestDispatcher("error.jsp");
         }
+        rd.forward(request, response);
     }
 
 
-    private void actualizar(String accion, HttpServletRequest request) {
+    private void actualizar(String accion, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (accion.equals("actualizar1") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
             cliente = cliente_dao.buscar(Integer.parseInt(request.getParameter("dni")));
             request.setAttribute("cliente", cliente);
@@ -67,9 +68,11 @@ public class Servlet extends HttpServlet {
                 rd = request.getRequestDispatcher("error.jsp");
             }
         }
+        rd.forward(request, response);
+
     }
 
-    private void eliminar(String accion, HttpServletRequest request) {
+    private void eliminar(String accion, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (accion.equals("eliminar1") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
             cliente = cliente_dao.buscar(Integer.parseInt(request.getParameter("dni")));
             request.setAttribute("cliente", cliente);
@@ -96,15 +99,20 @@ public class Servlet extends HttpServlet {
                 rd = request.getRequestDispatcher("error.jsp");
             }
         }
+        rd.forward(request, response);
     }
 
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         accion = request.getParameter("accion");
-        ingresar(accion, request);
-        actualizar(accion, request);
-        eliminar(accion, request);
-        rd.forward(request, response);
+        if (accion.equals("ingresar")) {
+            ingresar(accion, request, response);
+        } else if (accion.equals("actualizar1") || accion.equals("actualizar2")) {
+            actualizar(accion, request, response);
+        } else {
+            eliminar(accion, request, response);
+        }
+
 
     }
 
