@@ -14,6 +14,7 @@ public class Servlet extends HttpServlet {
     private Cliente cliente = new Cliente();
     private ClienteDAO cliente_dao = new ClienteDAO();
     private RequestDispatcher rd = null;
+    private String accion;
 
     private void ingresar(String accion, HttpServletRequest request) {
         if (accion.equals("ingresar") && !(cliente_dao.existe(Integer.parseInt(request.getParameter("dni"))))) {
@@ -96,11 +97,10 @@ public class Servlet extends HttpServlet {
             }
         }
     }
-    public void doGet(HttpServletRequest request) {
 
-    }
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String accion = request.getParameter("accion");
+        accion = request.getParameter("accion");
         ingresar(accion, request);
         actualizar(accion, request);
         eliminar(accion, request);
