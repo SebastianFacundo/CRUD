@@ -49,6 +49,14 @@ public class ClienteDAO {
             return clientes;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally{
+            try {
+                if( rs!=null ) rs.close();
+                if( ps!=null ) ps.close();
+                if( con!=null ) con.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

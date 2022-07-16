@@ -12,7 +12,7 @@ public class Conexion {
     private static Connection con = null;
 
     public static Connection getConnection() {
-        if (con==(null)) {
+        if (con==null) {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 con = DriverManager.getConnection(URL, USUARIO, PASS);
