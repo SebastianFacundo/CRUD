@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 
 public class Conexion {
 
-    private static final String URL = "jdbc:mysql://eu-cdbr-west-03.cleardb.net:3306/heroku_cca90c3aa387efe?autoReconnet=true&useSSL=false";
+    private static final String URL = "jdbc:mysql://eu-cdbr-west-03.cleardb.net:3306/heroku_cca90c3aa387efe";
     private static final String USUARIO = "b18ec6b31a816e";
     private static final String PASS = "f1ca3d3d";
     private static Connection con = null;
