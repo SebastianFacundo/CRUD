@@ -1,6 +1,7 @@
 /* Autor: SEBASTIÁN FACUNDO VERA */
 package com.example.crud;
 
+
 import java.io.*;
 import java.sql.Date;
 import javax.servlet.RequestDispatcher;
@@ -37,7 +38,7 @@ public class Servlet extends HttpServlet {
 
 
     private void actualizar(String accion, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        if (accion.equals("actualizar1") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
+        if (accion.equals("busqueda_actualizar") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
             cliente = cliente_dao.buscar(Integer.parseInt(request.getParameter("dni")));
             request.setAttribute("cliente", cliente);
             request.setAttribute("titulo", "Formulario de Actualización");
@@ -45,50 +46,53 @@ public class Servlet extends HttpServlet {
             request.setAttribute("boton", "Actualizar");
             request.setAttribute("color_boton", "warning");
             request.setAttribute("mensaje", "*No se puede modificar el DNI, en ese caso eliminar y volver a ingresar");
-            request.setAttribute("accion", "actualizar2");
+            request.setAttribute("accion", "actualizar");
             rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
 
-        } else if (accion.equals("actualizar1")) {
+        } else if (accion.equals("busqueda_actualizar")) {
             request.setAttribute("titulo", "Error al Buscar");
             request.setAttribute("mensaje", "CLIENTE NO ENCONTRADO");
             rd = request.getRequestDispatcher("error.jsp");
 
-        } else if (accion.equals("actualizar2")) {
-            cliente.setNombre(request.getParameter("nombre"));
-            cliente.setApellido(request.getParameter("apellido"));
-            cliente.setDni(Integer.parseInt(request.getParameter("dni")));
-            cliente.setEmail(request.getParameter("email"));
-            if (cliente_dao.modificar(cliente)) {
-                request.setAttribute("mensaje", "CLIENTE ACTUALIZADO");
-                rd = request.getRequestDispatcher("exito.jsp");
-
+        } else if (accion.equals("actualizar")) {
+            if (cliente.getDni() == Integer.parseInt(request.getParameter("dni")) || ((!cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))))) {
+                int dni_anterior= cliente.getDni();
+                cliente.setNombre(request.getParameter("nombre"));
+                cliente.setApellido(request.getParameter("apellido"));
+                cliente.setDni(Integer.parseInt(request.getParameter("dni")));
+                cliente.setEmail(request.getParameter("email"));
+                if (cliente_dao.modificar(cliente,dni_anterior)) {
+                    request.setAttribute("mensaje", "CLIENTE ACTUALIZADO");
+                    rd = request.getRequestDispatcher("exito.jsp");
+                }
             } else {
                 request.setAttribute("titulo", "Error al Actualizar");
-                request.setAttribute("mensaje", "CLIENTE NO ACTUALIZADO");
+                request.setAttribute("mensaje", "CLIENTE NO ACTUALIZADO, VERIFICAR DNI");
                 rd = request.getRequestDispatcher("error.jsp");
             }
         }
+
         rd.forward(request, response);
 
     }
 
     private void eliminar(String accion, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        if (accion.equals("eliminar1") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
+        if (accion.equals("busqueda_eliminar") && cliente_dao.existe(Integer.parseInt(request.getParameter("dni")))) {
             cliente = cliente_dao.buscar(Integer.parseInt(request.getParameter("dni")));
             request.setAttribute("cliente", cliente);
             request.setAttribute("titulo", "Formulario de Eliminación");
             request.setAttribute("h1", "Eliminación");
             request.setAttribute("boton", "Eliminar");
             request.setAttribute("color_boton", "danger");
-            request.setAttribute("accion", "eliminar2");
+            request.setAttribute("accion", "eliminar");
             rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
 
-        } else if (accion.equals("eliminar1")) {
+        } else if (accion.equals("busqueda_eliminar")) {
             request.setAttribute("titulo", "Error al Buscar");
             request.setAttribute("mensaje", "CLIENTE NO ENCONTRADO");
             rd = request.getRequestDispatcher("error.jsp");
 
-        } else if (accion.equals("eliminar2")) {
+        } else if (accion.equals("eliminar")) {
             System.out.println(cliente);
             if (cliente_dao.eliminar(cliente.getId_cliente())) {
                 request.setAttribute("mensaje", "CLIENTE ELIMINADO");
@@ -107,7 +111,7 @@ public class Servlet extends HttpServlet {
         accion = request.getParameter("accion");
         if (accion.equals("ingresar")) {
             ingresar(accion, request, response);
-        } else if (accion.equals("actualizar1") || accion.equals("actualizar2")) {
+        } else if (accion.equals("busqueda_actualizar") || accion.equals("actualizar")) {
             actualizar(accion, request, response);
         } else {
             eliminar(accion, request, response);

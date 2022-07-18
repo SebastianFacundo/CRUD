@@ -52,7 +52,7 @@ public class ClienteDAO {
         }
     }
 
-    public boolean modificar(Cliente cliente) {
+    public boolean modificar(Cliente cliente, int dni_anterior) {
         Connection con = Conexion.getConnection();
         boolean estado = false;
         try {
@@ -61,7 +61,7 @@ public class ClienteDAO {
             ps.setString(2, cliente.getApellido());
             ps.setInt(3, cliente.getDni());
             ps.setString(4, cliente.getEmail());
-            ps.setInt(5, cliente.getDni());
+            ps.setInt(5, dni_anterior);
             ps.executeUpdate();
             estado = true;
         } catch (SQLException e) {
