@@ -60,9 +60,7 @@
             </div>
         </form>
         <a href="index.jsp" class="btn btn-secondary mt-5 w-25 fs-5"><i class="bi bi-arrow-left"> </i>ATRÁS</a>
-        <%if(request.getAttribute("accion").equals("actualizar")){%>
-        <p><%=request.getAttribute("mensaje")%></p>
-        <%}%>
+
     </div>
 </div>
 </body>

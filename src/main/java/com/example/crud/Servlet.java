@@ -45,7 +45,6 @@ public class Servlet extends HttpServlet {
             request.setAttribute("h1", "Actualización");
             request.setAttribute("boton", "Actualizar");
             request.setAttribute("color_boton", "warning");
-            request.setAttribute("mensaje", "*No se puede modificar el DNI, en ese caso eliminar y volver a ingresar");
             request.setAttribute("accion", "actualizar");
             rd = request.getRequestDispatcher("actualizacion_eliminacion.jsp");
 
