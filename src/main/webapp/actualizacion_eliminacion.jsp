@@ -38,7 +38,7 @@
             </div>
             <div class="form-group mt-3">
                 <label class="fs-5" for="dni">Dni:</label>
-                <input type="number" id="dni" name="dni" class="form-control"
+                <input type="number" id="dni" name="dni" class="form-control" max="2147483648"
                        placeholder="<%=String.valueOf(c.getDni())%>"
                     <%if(request.getAttribute("accion").equals("eliminar")){%>
                        value="<%=String.valueOf(c.getDni())%>" readonly
