@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 
 public class Conexion {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/empresa?autoReconnet=true&useSSL=false";
+    private static final String URL = "jdbc:mysql://localhost:3306/nombre_base?autoReconnet=true&useSSL=false";
     private static final String USUARIO = "root";
     private static final String PASS = "";
     private static Connection con = null;
